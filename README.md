@@ -6,4 +6,4 @@ This API automation Testing contains four types of type scenarios:
 4. Retrieve User Listing 
 
 The development of automation testing includes:
-NUnit and RestSharp framework
+C#, NUnit and RestSharp framework
