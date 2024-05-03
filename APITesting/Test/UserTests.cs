@@ -5,7 +5,7 @@ using System;
 
 namespace APITesting.Test
 {
-    public class GetUserTest
+    public class UserTests
     {
         internal string id;
 
