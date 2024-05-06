@@ -10,6 +10,7 @@ namespace APITesting.Test
     public class UserTest : IDisposable
     {
         internal string id;
+        private string name = "Kenny";
 
         [Test]
         [Description("Retrieve user listing")]
@@ -29,7 +30,6 @@ namespace APITesting.Test
         [Description("Create a new user")]
         public void CreateUser()
         {
-            var name = "Kenny";
             string bodyText = @"{""name"": ""Kenny"",""job"": ""leader""}";
             var user = new ApiHelper<User>();
             var url = user.SetUrl("/api/users");
@@ -45,7 +45,6 @@ namespace APITesting.Test
         [Description("Update user job detail")]
         public void UpdateUser()
         {
-            var name = "Kenny";
             string bodyText = @"{""name"": ""Kenny"",""job"": ""cashier""}";
             var user = new ApiHelper<User>();
             var url = user.SetUrl("/api/users/2");
