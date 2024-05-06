@@ -13,7 +13,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -24,11 +24,17 @@ jobs:
     - name: Restore dependencies
       run: nuget restore
       
-    - name: Build
+    - name: 🔨 Build
       run: dotnet build --no-restore
 
     - name: Install NUnit.ConsoleRunner
-      run: nuget install NUnit.ConsoleRunner -Version 3.17.0 -DirectDownload -OutputDirectory
+      run: nuget install NUnit.ConsoleRunner -Version 3.17.0 -DirectDownload -OutputDirectory .
          
-    - name: Run API Tests
-      run: ./NUnit.ConsoleRunner.3.17.0/tools/nunit3-console.exe  APITesting/bin/Debug/APITesting.dll
+    - name: 🛠️ Run API Tests
+      run: ./NUnit.ConsoleRunner.3.17.0/tools/nunit3-console.exe  "./APITesting/bin/Debug/net6.0/APITesting.dll"
+
+    - name: 💾 Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+         name: Test results (macOS)
+         path: test-results
