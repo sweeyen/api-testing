@@ -39,7 +39,7 @@ jobs:
       run: nuget install NUnit.ConsoleRunner -Version 3.19.2 -DirectDownload -OutputDirectory .
          
     - name: 🛠️ Run API Tests
-      run: .\NUnit.ConsoleRunner.3.19.2\tools\nunit3-console.exe --timeout=600000 --result=TestResult.xml;format=nunit3 ".\APITesting\bin\Release\net8.0\APITesting.dll"
+      run: .\NUnit.ConsoleRunner.3.19.2\tools\nunit3-console.exe --timeout=600000 "--result=TestResult.xml;format=nunit3" ".\APITesting\bin\Release\net8.0\APITesting.dll"
       
     - name: 💾 Upload test results
       uses: actions/upload-artifact@v4
