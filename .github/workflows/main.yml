@@ -39,11 +39,22 @@ jobs:
       run: nuget install NUnit.ConsoleRunner -Version 3.19.2 -DirectDownload -OutputDirectory .
          
     - name: 🛠️ Run API Tests
-      run: .\NUnit.ConsoleRunner.3.19.2\tools\nunit3-console.exe --timeout=600000 "--result=TestResult.html;format=nunit3" ".\APITesting\bin\Release\net8.0\APITesting.dll"
+      run: |
+        # List directory contents before test run
+        dir
+        # Run tests with console output and detailed HTML report
+        .\NUnit.ConsoleRunner.3.19.2\tools\nunit3-console.exe --timeout=600000 --labels=All "--result=TestResult.html;format=nunit3;transform=nunit3-html.xslt" ".\APITesting\bin\Release\net8.0\APITesting.dll"
+        # Check if HTML file exists and its size
+        if (Test-Path TestResult.html) {
+          Write-Host "HTML file exists. Size: $((Get-Item TestResult.html).Length) bytes"
+          Get-Content TestResult.html | Select-Object -First 10
+        } else {
+          Write-Host "HTML file does not exist"
+        }
       
     - name: 📊 Publish Test Results
       uses: actions/upload-artifact@v4
       with:
         name: Test Results
         path: TestResult.html
-        retention-days: 300
+        retention-days: 30
