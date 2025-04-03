@@ -6,7 +6,7 @@ using System;
 namespace APITesting.Test
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.All)]
+  
     public class UserTest : IDisposable
     {
         internal string id;

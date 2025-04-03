@@ -1,6 +1,3 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
 name: .NET
 
 on:
@@ -12,17 +9,28 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: '6.0.x'
     - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: nuget restore
+      
+    - name: 🔨 Build
+      run: dotnet build --no-restore && dotnet publish
+
+    - name: Install NUnit.ConsoleRunner
+      run: nuget install NUnit.ConsoleRunner -Version 3.17.0 -DirectDownload -OutputDirectory .
+         
+    - name: 🛠️ Run API Tests
+      run: ./NUnit.ConsoleRunner.3.17.0/tools/nunit3-console.exe  -result=TestResult.xml;format=nunit3 "./APITesting/bin/Debug/net6.0/APITesting.dll"
+
+    - name: 💾 Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+         name: Test results (macOS)
+         path: test-results
