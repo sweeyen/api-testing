@@ -8,31 +8,29 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+
+    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
-
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '6.0.x'
-
     - name: Restore dependencies
-      run: dotnet restore
+      run: nuget restore
+      
+    - name: 🔨 Build
+      run: dotnet build --no-restore && dotnet publish
 
-    - name: Build
-      run: dotnet build --no-restore --configuration Release
+    - name: Install NUnit.ConsoleRunner
+      run: nuget install NUnit.ConsoleRunner -Version 3.17.0 -DirectDownload -OutputDirectory .
+         
+    - name: 🛠️ Run API Tests
+      run: ./NUnit.ConsoleRunner.3.17.0/tools/nunit3-console.exe  -result=TestResult.xml;format=nunit3 "./APITesting/bin/Debug/net6.0/APITesting.dll"
 
-    - name: Run tests with increased timeout and retry
-      run: |
-        retries=3
-        count=0
-        until [ $count -ge $retries ]
-        do
-          dotnet test --no-build --verbosity normal --timeout 600000 && break
-          count=$((count+1))
-          echo "Test run $count failed. Retrying in 10 seconds..."
-          sleep 10
-        done
-      continue-on-error: false
+    - name: 💾 Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+         name: Test results (macOS)
+         path: test-results
