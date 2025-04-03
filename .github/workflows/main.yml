@@ -46,13 +46,4 @@ jobs:
       with:
         name: Test Results
         path: TestResult.html
-        retention-days: 30
-
-    - name: 📝 Publish Test Summary
-      uses: dorny/test-reporter@v1
-      if: success() || failure()
-      with:
-        name: NUnit Tests
-        path: TestResult.html
-        reporter: java-test-reporter
-        fail-on-error: false
+        retention-days: 300
