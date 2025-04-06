@@ -44,13 +44,6 @@ jobs:
         dir
         # Run tests with console output and HTML report
         .\NUnit.ConsoleRunner.3.19.2\tools\nunit3-console.exe --timeout=600000 --labels=All "--result=TestResult.html;format=html" ".\APITesting\bin\Release\net8.0\APITesting.dll"
-        # Check if HTML file exists and its size
-        if (Test-Path TestResult.html) {
-          Write-Host "HTML file exists. Size: $((Get-Item TestResult.html).Length) bytes"
-          Get-Content TestResult.html | Select-Object -First 10
-        } else {
-          Write-Host "HTML file does not exist"
-        }
       
     - name: 📊 Publish Test Results
       uses: actions/upload-artifact@v4
