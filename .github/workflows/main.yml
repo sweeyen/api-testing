@@ -1,6 +1,3 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
 name: .NET API Tests
 
 on:
@@ -42,12 +39,34 @@ jobs:
       run: |
         # List directory contents before test run
         dir
-        # Run tests with console output and HTML report
-        .\NUnit.ConsoleRunner.3.19.2\tools\nunit3-console.exe --timeout=600000 --labels=All "--result=TestResult.html;format=html" ".\APITesting\bin\Release\net8.0\APITesting.dll"
+        # Run tests with console output and XML report
+        .\NUnit.ConsoleRunner.3.19.2\tools\nunit3-console.exe --timeout=600000 --labels=Before "--result=TestResult.xml;format=nunit2" ".\APITesting\bin\Release\net8.0\APITesting.dll"
       
-    - name: 📊 Publish Test Results
-      uses: actions/upload-artifact@v4
+    - name: Convert Test Results to HTML
+      run: |
+        powershell -Command "
+        $xslt = [xml](Get-Content '.\NUnit.ConsoleRunner.3.19.2\tools\NUnitTransform.xslt');
+        $xml = [xml](Get-Content 'TestResult.xml');
+        $transform = New-Object System.Xml.Xsl.XslCompiledTransform;
+        $transform.Load($xslt);
+        $writer = [System.Xml.XmlWriter]::Create('TestResult.html');
+        $transform.Transform($xml, $writer);
+        $writer.Close();
+        "
+      
+    - name: Upload Test Results Artifact
+      uses: actions/upload-pages-artifact@v3
       with:
-        name: Test Results
         path: TestResult.html
-        retention-days: 30
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+    - name: Deploy to GitHub Pages
+      id: pages
+      uses: actions/deploy-pages@v2
