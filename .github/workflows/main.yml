@@ -43,7 +43,7 @@ jobs:
         # List directory contents before test run
         dir
         # Run tests with console output and XML report
-        .\NUnit.ConsoleRunner.3.19.2\tools\nunit3-console.exe ".\APITesting\bin\Release\net8.0\APITesting.dll" --timeout=600000 --labels=Before --result=TestResults/test_results.xml;format=nunit3
+        .\NUnit.ConsoleRunner.3.19.2\tools\nunit3-console.exe ".\APITesting\bin\Release\net8.0\APITesting.dll" --timeout=600000 --labels=Before --result=TestResults/test_results.xml
       
     - name: Upload test results
       uses: actions/upload-artifact@v4
