@@ -35,12 +35,15 @@ jobs:
     - name: Install NUnit.ConsoleRunner
       run: nuget install NUnit.ConsoleRunner -Version 3.19.2 -DirectDownload -OutputDirectory .
          
+    - name: Create Test Results Directory
+      run: mkdir TestResults
+      
     - name: 🛠️ Run API Tests
       run: |
         # List directory contents before test run
         dir
         # Run tests with console output and XML report
-        .\NUnit.ConsoleRunner.3.19.2\tools\n|         .\NUnit.ConsoleRunner.3.19.2\tools\nunit3unit3-console.exe --timeout=600000 --labels=Before "---console.exe --timeout=600000 --labels=Before "--resultresult=TestResult.xml;format=nunit3" ".\APITesting\=TestResult.xml;format=nunit3" ".\APITesting\bin\Release\net8.0\APITesting.dll"
+        .\NUnit.ConsoleRunner.3.19.2\tools\nunit3-console.exe ".\APITesting\bin\Release\net8.0\APITesting.dll" --timeout=600000 --labels=Before --result=TestResults/test_results.xml;format=nunit3
       
     - name: Upload test results
       uses: actions/upload-artifact@v4
@@ -53,17 +56,5 @@ jobs:
       if: always()
       with:
         name: Test Results
-        path: TestResults/test_results.trx
-        reporter: dotnet-trx
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-
-    steps:
-    - name: Deploy to GitHub Pages
-      id: pages
-      uses: actions/deploy-pages@v2
+        path: TestResults/test_results.xml
+        reporter: nunit
