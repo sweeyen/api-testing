@@ -57,4 +57,4 @@ jobs:
       with:
         name: Test Results
         path: TestResults/test_results.xml
-        reporter: nunit
+        reporter: dotnet-nunit
