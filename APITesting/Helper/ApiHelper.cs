@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -6,51 +7,73 @@ namespace APITesting.Helper
 {
     public class ApiHelper<T>
     {
-        public RestClient restClient;
-        public RestRequest restRequest;
-        public RestResponse restResponse;
-        public String baseUrl = @"https://reqres.in";
+        private RestClient RestClient;
+        private RestRequest RestRequest;
+        private String BaseUrl = @"https://reqres.in";
 
         public RestClient SetUrl(String endpoint)
         {
-            var url = String.Concat(baseUrl, endpoint);
-            var options = new RestClientOptions(url);
-            var restClient = new RestClient(options);
-            return restClient;
+            var url = String.Concat(BaseUrl, endpoint);
+            RestClient = new RestClient(new RestClientOptions(url)); // Simplified 'new' expression
+            return RestClient;
         }
 
         public RestRequest PostRequestWithBody(string request)
         {
-            restRequest = new RestRequest();
-            restRequest.Method = Method.Post;
-            restRequest.AddHeader("Accept", "application/json");
-            restRequest.AddJsonBody(request);
-            return restRequest;
+            RestRequest = new RestRequest
+            {
+                Method = Method.Post
+            };
+            RestRequest.AddHeader("Accept", "application/json");
+            var headers = new Dictionary<string, string>
+            {
+                { "x-api-key", "reqres-free-v1" },
+                { "Accept", "application/json"  }
+            };
+            RestRequest.AddHeaders(headers);
+            RestRequest.AddJsonBody(request);
+            return RestRequest;
         }
 
         public RestRequest UpdateRequestWithBody(string request)
         {
-            restRequest = new RestRequest();
-            restRequest.Method = Method.Put;
-            restRequest.AddHeader("Accept", "application/json");
-            restRequest.AddJsonBody(request);
-            return restRequest;
+            RestRequest = new RestRequest
+            {
+                Method = Method.Put
+            };
+            var headers = new Dictionary<string, string>
+            {
+                { "x-api-key", "reqres-free-v1" },
+                { "Accept", "application/json"  }
+            };
+            RestRequest.AddHeaders(headers);
+            RestRequest.AddJsonBody(request);
+            return RestRequest;
         }
 
         public RestRequest DeleteRequest()
         {
-            restRequest = new RestRequest();
-            restRequest.Method = Method.Delete;
-            restRequest.AddHeader("Accept", "application/json");
-            return restRequest;
+            RestRequest = new RestRequest
+            {
+                Method = Method.Delete
+            };
+            var headers = new Dictionary<string, string>
+            {
+                { "x-api-key", "reqres-free-v1" },
+                { "Accept", "application/json"  }
+            };
+            RestRequest.AddHeaders(headers);
+            return RestRequest;
         }
 
         public RestRequest SendRequest()
         {
-            restRequest = new RestRequest();
-            restRequest.Method = Method.Get;
-            restRequest.AddHeader("Accept", "application/json");
-            return restRequest;
+            RestRequest = new RestRequest
+            {
+                Method = Method.Get
+            };
+            RestRequest.AddHeader("Accept", "application/json");
+            return RestRequest;
         }
 
         public RestResponse GetResponse(RestClient restClient, RestRequest restRequest)
@@ -58,11 +81,16 @@ namespace APITesting.Helper
             return restClient.Execute(restRequest);
         }
 
-        public Attributes GetContent<Attributes>(RestResponse restResponse)
+        public TResult GetContent<TResult>(RestResponse response) // Renamed the inner type parameter to TResult
         {
-            var content = restResponse.Content;
-            Attributes attribute = JsonConvert.DeserializeObject<Attributes>(content);
+            var content = response.Content;
+            TResult attribute = JsonConvert.DeserializeObject<TResult>(content);
             return attribute;
+        }
+
+        public void DisposeRestClient()
+        {
+            RestClient.Dispose();
         }
     }
 }

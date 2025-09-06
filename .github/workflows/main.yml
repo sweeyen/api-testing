@@ -16,7 +16,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: '9.0.x'
     
     - name: Cache NuGet packages
       uses: actions/cache@v4
@@ -43,7 +43,7 @@ jobs:
         # List directory contents before test run
         dir
         # Run tests with console output and XML report
-        .\NUnit.ConsoleRunner.3.19.2\tools\nunit3-console.exe ".\APITesting\bin\Release\net8.0\APITesting.dll" --timeout=600000 --labels=Before --result=TestResults/test_results.xml
+        .\NUnit.ConsoleRunner.3.19.2\tools\nunit3-console.exe ".\APITesting\bin\Release\net9.0\APITesting.dll" --timeout=600000 --labels=Before --result=TestResults/test_results.xml
       
     - name: Upload test results
       uses: actions/upload-artifact@v4
