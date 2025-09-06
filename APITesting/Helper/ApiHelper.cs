@@ -9,7 +9,6 @@ namespace APITesting.Helper
     {
         private RestClient RestClient;
         private RestRequest RestRequest;
-        private RestResponse restResponse;
         private String BaseUrl = @"https://reqres.in";
 
         public RestClient SetUrl(String endpoint)

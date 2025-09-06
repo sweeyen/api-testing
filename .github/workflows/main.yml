@@ -33,7 +33,7 @@ jobs:
       run: dotnet build --no-restore --configuration Release
       
     - name: Install NUnit.ConsoleRunner
-      run: nuget install NUnit.ConsoleRunner -Version 3.20.1 -DirectDownload -OutputDirectory .
+      run: nuget install NUnit.ConsoleRunner -Version 3.19.2 -DirectDownload -OutputDirectory .
          
     - name: Create Test Results Directory
       run: mkdir TestResults
@@ -43,7 +43,7 @@ jobs:
         # List directory contents before test run
         dir
         # Run tests with console output and XML report
-        .\NUnit.ConsoleRunner.3.20.1\tools\nunit3-console.exe ".\APITesting\bin\Release\net9.0\APITesting.dll" --timeout=600000 --labels=Before --result=TestResults/test_results.xml
+        .\NUnit.ConsoleRunner.3.19.2\tools\nunit3-console.exe ".\APITesting\bin\Release\net9.0\APITesting.dll" --timeout=600000 --labels=Before --result=TestResults/test_results.xml
       
     - name: Upload test results
       uses: actions/upload-artifact@v4
